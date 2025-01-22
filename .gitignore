@@ -1,0 +1,24 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.production
+
+# IDE and editor files
+.vscode/
+.idea/
+.DS_Store
+
+# Logs and temporary files
+logs/
+*.log
+*.tmp

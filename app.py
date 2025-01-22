@@ -74,8 +74,17 @@ def compare_features(features1, features2):
         logging.error(f"Error in compare_features: {e}")
         return 0.0
 
-@app.route('/register', methods=['POST'])
+@app.route('/register', methods=['POST', 'OPTIONS'])
 def register_animal():
+    if request.method == 'OPTIONS':
+        # Handle preflight request
+        response = jsonify({'success': True})
+        response.headers.add('Access-Control-Allow-Origin', 'https://pet-app-frontend-git-main-kr96adityas-projects.vercel.app')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
+        response.headers.add('Access-Control-Allow-Methods', 'POST')
+        return response
+
+    # Handle the actual POST request
     try:
         if 'image' not in request.files:
             return jsonify({'success': False, 'error': 'No image provided'}), 400
@@ -110,19 +119,30 @@ def register_animal():
         # Insert into MongoDB
         animals_collection.insert_one(entry)
 
-        return jsonify({
+        response = jsonify({
             'success': True,
             'animal_id': animal_id,
             'image_url': image_url,  # Return the Cloudinary URL to the frontend
             'registered_at': entry['registered_at']
         })
+        response.headers.add('Access-Control-Allow-Origin', 'https://pet-app-frontend-git-main-kr96adityas-projects.vercel.app')
+        return response
 
     except Exception as e:
         logging.error(f"Error in register: {e}")
         return jsonify({'success': False, 'error': str(e)}), 500
 
-@app.route('/search', methods=['POST'])
+@app.route('/search', methods=['POST', 'OPTIONS'])
 def search_animal():
+    if request.method == 'OPTIONS':
+        # Handle preflight request
+        response = jsonify({'success': True})
+        response.headers.add('Access-Control-Allow-Origin', 'https://pet-app-frontend-git-main-kr96adityas-projects.vercel.app')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
+        response.headers.add('Access-Control-Allow-Methods', 'POST')
+        return response
+
+    # Handle the actual POST request
     try:
         if 'image' not in request.files:
             return jsonify({'success': False, 'error': 'No image provided'}), 400
@@ -155,14 +175,16 @@ def search_animal():
         # Sort results by similarity
         results = sorted(results, key=lambda x: x['similarity'], reverse=True)[:5]
 
-        return jsonify({
+        response = jsonify({
             'success': True,
             'matches': results
         })
+        response.headers.add('Access-Control-Allow-Origin', 'https://pet-app-frontend-git-main-kr96adityas-projects.vercel.app')
+        return response
 
     except Exception as e:
         logging.error(f"Error in search: {e}")
         return jsonify({'success': False, 'error': str(e)}), 500
-
+    
 if __name__ == '__main__':
     app.run(debug=True)

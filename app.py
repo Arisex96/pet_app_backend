@@ -76,6 +76,10 @@ def compare_features(features1, features2):
 
 @app.route('/register', methods=['POST'])
 def register_animal():
+    
+    if request.method == 'OPTIONS':
+        return jsonify({'success': True}), 200
+    
     try:
         if 'image' not in request.files:
             return jsonify({'success': False, 'error': 'No image provided'}), 400
